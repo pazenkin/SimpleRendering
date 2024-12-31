@@ -1,3 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using SimpleRendering.Scripts;
 
-Console.WriteLine("Hello, World!");
+using var game = new Game(800, 600, "LearnOpenTK");
+game.Run();
