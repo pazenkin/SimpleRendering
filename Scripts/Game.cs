@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.ES30;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -13,13 +13,21 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private Shader _shader;
 
     private int _vertexBufferObject;
+    private int _elementBufferObject;
     private int _vertexArrayObject;
 
     private readonly float[] _vertices =
     [
-        -0.5f, -0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f
+    ];
+
+    private readonly uint[] _indices =
+    [
+        0, 1, 3,
+        1, 2, 3
     ];
 
     protected override void OnLoad()
@@ -38,6 +46,11 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
 
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
+
+        _elementBufferObject = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices,
+            BufferUsageHint.StaticDraw);
 
         _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
         _shader.Use();
@@ -67,9 +80,9 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _shader.Use();
 
         GL.BindVertexArray(_vertexArrayObject);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
 
-        Context.SwapBuffers();
+        SwapBuffers();
     }
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
