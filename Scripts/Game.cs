@@ -13,21 +13,14 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private Shader _shader;
 
     private int _vertexBufferObject;
-    private int _elementBufferObject;
     private int _vertexArrayObject;
 
     private readonly float[] _vertices =
     [
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f
-    ];
-
-    private readonly uint[] _indices =
-    [
-        0, 1, 3,
-        1, 2, 3
+        // positions       // colors
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top 
     ];
 
     protected override void OnLoad()
@@ -44,13 +37,11 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _vertexArrayObject = GL.GenVertexArray();
         GL.BindVertexArray(_vertexArrayObject);
 
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
-
-        _elementBufferObject = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices,
-            BufferUsageHint.StaticDraw);
+        
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+        GL.EnableVertexAttribArray(1);
 
         _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
         _shader.Use();
@@ -80,7 +71,7 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _shader.Use();
 
         GL.BindVertexArray(_vertexArrayObject);
-        GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 
         SwapBuffers();
     }
