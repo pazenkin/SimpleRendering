@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 
 namespace SimpleRendering.Scripts;
 
@@ -58,6 +58,11 @@ public class Shader : IDisposable
     {
         if (_disposed) return;
         Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
+    }
+
+    public int GetAttribLocation(string attribName)
+    {
+        return GL.GetAttribLocation(Handle, attribName);
     }
 
     public void Use()
