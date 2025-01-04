@@ -70,6 +70,12 @@ public class Shader : IDisposable
         GL.UseProgram(Handle);
     }
 
+    public void SetInt(string name, int value)
+    {
+        var location = GL.GetUniformLocation(Handle, name);
+        GL.Uniform1(location, value);
+    }
+
     protected virtual void Dispose(bool disposing)
     {
         if (_disposed) return;

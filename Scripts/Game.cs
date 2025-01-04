@@ -30,7 +30,8 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private int _vertexArrayObject;
 
     private Shader _shader;
-    private Texture _texture;
+    private Texture _texture0;
+    private Texture _texture1;
 
     protected override void OnLoad()
     {
@@ -63,24 +64,30 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float),
             3 * sizeof(float));
 
-        _texture = Texture.LoadFromFile("Resources/container.jpg");
-        _texture.Use(TextureUnit.Texture0);
+        _texture0 = Texture.LoadFromFile("Resources/container.jpg");
+        _texture0.Use(TextureUnit.Texture0);
+
+        _texture1 = Texture.LoadFromFile("Resources/awesomeface.png");
+
+        _shader.SetInt("texture0", 0);
+        _shader.SetInt("texture1", 1);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
-        base.OnRenderFrame(e);
-
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
         GL.BindVertexArray(_vertexArrayObject);
 
-        _texture.Use(TextureUnit.Texture0);
+        _texture0.Use(TextureUnit.Texture0);
+        _texture1.Use(TextureUnit.Texture1);
         _shader.Use();
 
         GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
 
         SwapBuffers();
+
+        base.OnRenderFrame(e);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
