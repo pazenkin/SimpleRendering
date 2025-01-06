@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -28,10 +29,9 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private int _elementBufferObject;
     private int _vertexBufferObject;
     private int _vertexArrayObject;
-
     private Shader _shader;
-    private Texture _texture0;
-    private Texture _texture1;
+    private Texture _texture;
+    private Texture _texture2;
 
     protected override void OnLoad()
     {
@@ -55,7 +55,7 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
         _shader.Use();
 
-        var vertexLocation = _shader.GetAttribLocation("aPosition");
+        var vertexLocation = _shader.GetAttribLocation("aPos");
         GL.EnableVertexAttribArray(vertexLocation);
         GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
 
@@ -64,10 +64,11 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float),
             3 * sizeof(float));
 
-        _texture0 = Texture.LoadFromFile("Resources/container.jpg");
-        _texture0.Use(TextureUnit.Texture0);
+        _texture = Texture.LoadFromFile("Resources/container.jpg");
+        _texture.Use(TextureUnit.Texture0);
 
-        _texture1 = Texture.LoadFromFile("Resources/awesomeface.png");
+        _texture2 = Texture.LoadFromFile("Resources/awesomeface.png");
+        _texture2.Use(TextureUnit.Texture1);
 
         _shader.SetInt("texture0", 0);
         _shader.SetInt("texture1", 1);
@@ -75,19 +76,25 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
+        base.OnRenderFrame(e);
+
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
         GL.BindVertexArray(_vertexArrayObject);
 
-        _texture0.Use(TextureUnit.Texture0);
-        _texture1.Use(TextureUnit.Texture1);
+        var transform = Matrix4.Identity;
+        transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(20f));
+        transform *= Matrix4.CreateScale(1.1f);
+        transform *= Matrix4.CreateTranslation(0.1f, 0.1f, 0.0f);
+
+        _texture.Use(TextureUnit.Texture0);
+        _texture2.Use(TextureUnit.Texture1);
         _shader.Use();
+        _shader.SetMatrix4("transform", transform);
 
         GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
 
         SwapBuffers();
-
-        base.OnRenderFrame(e);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs e)
