@@ -13,11 +13,47 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
 {
     private readonly float[] _vertices =
     [
-        // Position         Texture coordinates
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f // top left
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     ];
 
     private readonly uint[] _indices =
@@ -29,13 +65,18 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private int _elementBufferObject;
     private int _vertexBufferObject;
     private int _vertexArrayObject;
+    private double _time;
     private Shader _shader;
     private Texture _texture;
     private Texture _texture2;
+    private Matrix4 _view;
+    private Matrix4 _projection;
 
     protected override void OnLoad()
     {
         base.OnLoad();
+        
+        GL.Enable(EnableCap.DepthTest);
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -72,27 +113,33 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
 
         _shader.SetInt("texture0", 0);
         _shader.SetInt("texture1", 1);
+
+        _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
+        _projection =
+            Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / height, 0.1f,
+                100.0f);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
-
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         GL.BindVertexArray(_vertexArrayObject);
 
-        var transform = Matrix4.Identity;
-        transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(20f));
-        transform *= Matrix4.CreateScale(1.1f);
-        transform *= Matrix4.CreateTranslation(0.1f, 0.1f, 0.0f);
+        _time += 4.0 * e.Time;
+        var model = Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
 
         _texture.Use(TextureUnit.Texture0);
         _texture2.Use(TextureUnit.Texture1);
         _shader.Use();
-        _shader.SetMatrix4("transform", transform);
 
-        GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+        _shader.SetMatrix4("model", model);
+        _shader.SetMatrix4("view", _view);
+        _shader.SetMatrix4("projection", _projection);
+
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
 
         SwapBuffers();
     }
