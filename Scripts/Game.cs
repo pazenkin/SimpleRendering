@@ -8,52 +8,56 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace SimpleRendering.Scripts;
 
-public class Game(int width, int height, string title) : GameWindow(GameWindowSettings.Default,
-    new NativeWindowSettings { ClientSize = (width, height), Title = title })
+public class Game : GameWindow
 {
+    public Game(int width, int height, string title) : base(GameWindowSettings.Default,
+        new NativeWindowSettings { ClientSize = (width, height), Title = title })
+    {
+    }
+
     private readonly float[] _vertices =
     [
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
     ];
 
     private readonly uint[] _indices =
@@ -62,6 +66,8 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         1, 2, 3
     ];
 
+    private Camera _camera;
+
     private int _elementBufferObject;
     private int _vertexBufferObject;
     private int _vertexArrayObject;
@@ -69,13 +75,11 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
     private Shader _shader;
     private Texture _texture;
     private Texture _texture2;
-    private Matrix4 _view;
-    private Matrix4 _projection;
 
     protected override void OnLoad()
     {
         base.OnLoad();
-        
+
         GL.Enable(EnableCap.DepthTest);
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -114,16 +118,13 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _shader.SetInt("texture0", 0);
         _shader.SetInt("texture1", 1);
 
-        _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        _projection =
-            Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)width / height, 0.1f,
-                100.0f);
+        _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         base.OnRenderFrame(e);
-        
+
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         GL.BindVertexArray(_vertexArrayObject);
@@ -136,8 +137,8 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         _shader.Use();
 
         _shader.SetMatrix4("model", model);
-        _shader.SetMatrix4("view", _view);
-        _shader.SetMatrix4("projection", _projection);
+        _shader.SetMatrix4("view", _camera.GetViewMatrix());
+        _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
 
@@ -146,6 +147,8 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
 
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
+        if (!IsFocused) return;
+
         base.OnUpdateFrame(e);
 
         var input = KeyboardState;
@@ -153,6 +156,39 @@ public class Game(int width, int height, string title) : GameWindow(GameWindowSe
         if (input.IsKeyDown(Keys.Escape))
         {
             Close();
+        }
+
+        const float cameraSpeed = 1.5f;
+        var speed = cameraSpeed * (float)e.Time;
+
+        if (input.IsKeyDown(Keys.W))
+        {
+            _camera.Position += _camera.Front * speed;
+        }
+
+        if (input.IsKeyDown(Keys.S))
+        {
+            _camera.Position -= _camera.Front * speed;
+        }
+
+        if (input.IsKeyDown(Keys.A))
+        {
+            _camera.Position -= Vector3.Normalize(Vector3.Cross(_camera.Front, _camera.Up)) * speed;
+        }
+
+        if (input.IsKeyDown(Keys.D))
+        {
+            _camera.Position += Vector3.Normalize(Vector3.Cross(_camera.Front, _camera.Up)) * speed;
+        }
+
+        if (input.IsKeyDown(Keys.Space))
+        {
+            _camera.Position += _camera.Up * speed;
+        }
+
+        if (input.IsKeyDown(Keys.LeftShift))
+        {
+            _camera.Position -= _camera.Up * speed;
         }
     }
 
