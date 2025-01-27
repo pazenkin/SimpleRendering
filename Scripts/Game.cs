@@ -75,6 +75,8 @@ public class Game : GameWindow
     private Shader _shader;
     private Texture _texture;
     private Texture _texture2;
+    private bool _firstMove = true;
+    private Vector2 _lastPos;
 
     protected override void OnLoad()
     {
@@ -119,6 +121,7 @@ public class Game : GameWindow
         _shader.SetInt("texture1", 1);
 
         _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+        CursorState = CursorState.Grabbed;
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -190,6 +193,24 @@ public class Game : GameWindow
         {
             _camera.Position -= _camera.Up * speed;
         }
+
+        var mouse = MouseState;
+        const float sensitivity = 0.2f;
+
+        if (_firstMove)
+        {
+            _lastPos = new Vector2(mouse.X, mouse.Y);
+            _firstMove = false;
+        }
+        else
+        {
+            var deltaX = mouse.X - _lastPos.X;
+            var deltaY = mouse.Y - _lastPos.Y;
+            _lastPos = new Vector2(mouse.X, mouse.Y);
+
+            _camera.Yaw += deltaX * sensitivity;
+            _camera.Pitch -= deltaY * sensitivity;
+        }
     }
 
     protected override void OnResize(ResizeEventArgs e)
@@ -197,5 +218,12 @@ public class Game : GameWindow
         base.OnResize(e);
 
         GL.Viewport(0, 0, Size.X, Size.Y);
+    }
+    
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    {
+        base.OnMouseWheel(e);
+
+        _camera.Fov -= e.OffsetY;
     }
 }
